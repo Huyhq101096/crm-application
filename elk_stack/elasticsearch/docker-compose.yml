@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  elasticsearch:
+    container_name: crm-es
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.2
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - localnetwork
+    ports:
+      - 9200:9200
+
+
+  kibana:
+    container_name: crm-kb
+    image: docker.elastic.co/kibana/kibana:8.7.1
+    environment:
+      - ELASTICSEARCH_HOSTS=http://crm-es:9200
+    networks:
+      - localnetwork
+    depends_on:
+      - elasticsearch
+    ports:
+      - 5601:5601
+
+  filebeat:
+    container_name: crm-filebeat
+    image: docker.elastic.co/beats/filebeat:8.8.2
+    user: root
+    volumes:
+      - ../../../crm-api/django-log/django.log:/var/log/app:ro
+      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml
+    environment:
+      - ELASTICSEARCH_HOSTS=http://crm-es:9200
+    networks:
+      - localnetwork
+    depends_on:
+      - elasticsearch
+
+networks:
+  localnetwork:
+    driver: bridge
+    external: true

@@ -1,0 +1,14 @@
+filebeat.inputs:
+  # Thu thập log từ container Docker
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/app
+    fields:
+      app_name: crm-api
+    fields_under_root: true
+    # processors:
+    #   - add_docker_metadata: ~  # Thêm metadata từ Docker như tên container
+
+output.elasticsearch:
+  hosts: ["http://crm-es:9200"]

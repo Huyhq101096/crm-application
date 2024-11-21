@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  
+  db_postgre:
+    restart: always
+    image: postgres:latest
+    container_name: crm-postgre
+    volumes:
+      # - ../../crm-api/database/crm_postgre:/var/lib/postgresql/data
+      - ./postgres_data/crm_postgre:/var/lib/postgresql/data
+      - log:/var/log/postgresql
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=crm_db
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d crm_db -U admin"] # crm_db is the name of the database default is postgres
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - localnetwork
+
+volumes: # Define volumes
+  postgres_data: # Name of volume
+  log: # Name of volume
+
+networks:
+  localnetwork:
+    driver: bridge
+    external: true

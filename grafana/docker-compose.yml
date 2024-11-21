@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  grafana:
+    image: grafana/grafana:latest  # Sử dụng phiên bản mới nhất của Grafana
+    container_name: grafana        # Tên container
+    ports:
+      - "3000:3000"                # Mở cổng 3000 để truy cập Grafana trên trình duyệt
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin        # Tên đăng nhập admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123 # Mật khẩu admin
+    volumes:
+      - grafana-data:/var/lib/grafana       # Lưu trữ dữ liệu Grafana
+    restart: always                         # Tự động khởi động lại container nếu gặp lỗi
+
+volumes:
+  grafana-data:                              # Khai báo volume để giữ dữ liệu Grafana

@@ -1,9 +1,35 @@
 version: "3.8"
 
 services:
+
+  loki:
+    image: grafana/loki:main-3dc5155
+    container_name: crm-loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yaml:/etc/loki/loki-config.yaml
+    command: -config.file=/etc/loki/loki-config.yaml
+    networks:
+      - localnetwork
+  
+
+  promtail:
+    image: grafana/promtail:2.9.1
+    container_name: crm-promtail
+    volumes:
+      - ../../crm-api/django-log:/var/log:ro
+      - ./promtail-config.yaml:/etc/promtail/promtail-config.yaml:ro
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    depends_on:
+      - loki
+    networks:
+      - localnetwork
+
+
   grafana:
     image: grafana/grafana:latest  # Sử dụng phiên bản mới nhất của Grafana
-    container_name: grafana        # Tên container
+    container_name: crm-grafana        # Tên container
     ports:
       - "3000:3000"                # Mở cổng 3000 để truy cập Grafana trên trình duyệt
     environment:
@@ -12,6 +38,14 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana       # Lưu trữ dữ liệu Grafana
     restart: always                         # Tự động khởi động lại container nếu gặp lỗi
+    networks:
+      - localnetwork
 
 volumes:
   grafana-data:                              # Khai báo volume để giữ dữ liệu Grafana
+
+
+networks:
+  localnetwork:
+    driver: bridge
+    external: true

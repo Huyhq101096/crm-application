@@ -1,20 +1,21 @@
 version: "3.8"
 services:
   
-  db_postgre:
-    restart: always
+  db_postgres:
+
     image: postgres:latest
-    container_name: crm-postgre
-    volumes:
-      # - ../../crm-api/database/crm_postgre:/var/lib/postgresql/data
-      - ./postgres_data/crm_postgre:/var/lib/postgresql/data
-      - log:/var/log/postgresql
+    container_name: crm-postgres
     environment:
-      - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=crm_db
+      POSTGRES_USER: ${POSTGRES_USER} # Lấy từ file .env
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+      - ./logs:/var/log/postgresql
+      - ./init/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d crm_db -U admin"] # crm_db is the name of the database default is postgres
       interval: 10s
@@ -22,10 +23,6 @@ services:
       retries: 5
     networks:
       - localnetwork
-
-volumes: # Define volumes
-  postgres_data: # Name of volume
-  log: # Name of volume
 
 networks:
   localnetwork:

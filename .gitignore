@@ -1,1 +1,3 @@
 api_db/postgres_data/
+redis/redis_data/
+redis/redis_insight_data/

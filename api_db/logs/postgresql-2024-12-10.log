@@ -584,3 +584,4 @@
 	WHERE c.relnamespace=$1
 2024-12-10 03:39:52.167 GMT [440] DETAIL:  Parameters: $1 = '2200'
 2024-12-10 03:40:06.229 GMT [80] LOG:  checkpoint complete: wrote 973 buffers (5.9%); 1 WAL file(s) added, 0 removed, 0 recycled; write=97.839 s, sync=0.285 s, total=98.368 s; sync files=320, longest=0.005 s, average=0.001 s; distance=4518 kB, estimate=4518 kB; lsn=0/1D9DAB8, redo lsn=0/1D723D8
+2024-12-11 03:54:56.657 GMT [43339] LOG:  statement: BEGIN
